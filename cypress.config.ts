@@ -4,9 +4,12 @@ import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-prepro
 import createEsbuildPlugin from '@badeball/cypress-cucumber-preprocessor/esbuild';
 
 export default defineConfig({
-  viewportWidth: 1920,
-  viewportHeight: 1080,
+  pageLoadTimeout: 120000,
+  defaultCommandTimeout: 10000,
+  viewportWidth: 1280,
+  viewportHeight: 800,
   chromeWebSecurity: false,
+  watchForFileChanges: false,
   e2e: {
     baseUrl: 'https://www.onliner.by/',
     async setupNodeEvents(
