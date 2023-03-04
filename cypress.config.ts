@@ -11,7 +11,7 @@ export default defineConfig({
   chromeWebSecurity: false,
   watchForFileChanges: false,
   e2e: {
-    baseUrl: 'https://www.onliner.by/',
+    baseUrl:'https://www.onliner.by/',
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions

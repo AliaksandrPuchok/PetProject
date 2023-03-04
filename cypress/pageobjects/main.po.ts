@@ -1,9 +1,18 @@
 
+import { any } from 'cypress/types/bluebird';
 import Page from './page'
+
+
+let highestPrice: number;
+let cheapestPrice: number;
+
 
 class MainPage extends Page {
 
-  my_value = 35000.00; phone_value = 5000;
+
+
+  my_value = 15000.00; phone_value = 5000;
+
   catalogueBtnLocator = 'div.b-top-menu a[href="https://catalog.onliner.by"]';
   computersAndNetworksBtn = ':nth-child(4) > [data-id="2"]';
   accessoriesBtn = 'div.catalog-navigation-list__aside-title';
@@ -39,7 +48,7 @@ class MainPage extends Page {
 
   getExpensiveParam = () => cy.get(this.expensiveParam);
 
-  getMostExpensivePrice = () => cy.get(this.mostExpensivePrice);
+  getMostExpensivePrice = () => cy.get(this.mostExpensivePrice).first();
 
   getCatalogNavigationBar = () => cy.get(this.catalogNavigationBar).first();
 
@@ -68,6 +77,12 @@ class MainPage extends Page {
   visitHomePage() {
     cy.visit('/');
   }
+
+
+
+  // visitHomePage() {
+  //   cy.visit('https://catalog.onliner.by/mobile?mfr%5B0%5D=apple&order=price:desc');
+  // }
 
   clickCatalogButton() {
     this.getCatalogueBtn().click();
@@ -114,15 +129,53 @@ class MainPage extends Page {
   clickExpensiveOption() {
     cy.intercept('GET','https://catalog.onliner.by/sdapi/catalog.api/search/videocard?order=price:desc').as('waitExpensive');
     this.getExpensiveParam().contains('Дорогие').click();
+    cy.wait(5000);
     cy.wait('@waitExpensive');
+
   }
+  
 
   expectTheHighestPriceVideoCards() {
-    this.getMostExpensivePrice().first().then(($el) => {
-    const num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
-    expect(num).be.gte(this.my_value);
+    this.getMostExpensivePrice()
+    .invoke('text')
+    .then((price) => {
+      expect(parseFloat(price.replace(/\s/g, ''))).to.be.greaterThan(this.my_value)
+      cy.wrap(parseFloat(price.replace(/\s/g, ''))).as('highestPrice');
+    });
+  
+
+  }
+
+  clickCheapestOption() {
+    cy.intercept('GET','https://catalog.onliner.by/sdapi/catalog.api/search/videocard?order=price:asc').as('waitCheapest');
+    this.getExpensiveParam().contains('Дешевые').click();
+    cy.wait('@waitCheapest');
+  }
+
+
+  expectTheLowestPriceVideoCards() {
+    this.getMostExpensivePrice().invoke('text').then((cheapestPrice) => {
+    expect(parseFloat(cheapestPrice.replace(/\s/g, ''))).be.lessThan(this.my_value); 
+    cy.wrap(parseFloat(cheapestPrice.replace(/\s/g, ''))).as('cheaperPrice');
+  });
+  }
+
+  expectdifferenceBetweenHighestAndLowestPrices() {
+    cy.get('@highestPrice').then((highestPrice: any) => {
+      cy.get('@cheaperPrice').then((cheaperPrice: any) => {
+      const priceDiff = highestPrice - cheaperPrice;
+        cy.log(`The price difference between the cheapest and highest video card is ${highestPrice - cheaperPrice}`);
+        expect(priceDiff).to.be.greaterThan(0);
+  
+      });
     });
   }
+
+
+
+
+
+
 
   clickElectronic() {
     this.getElectronicBtn().click();  
@@ -165,16 +218,15 @@ clickMostExpensiveOption() {
   cy.wait('@Expensive');
 }
 
+//  parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
 expectMaximumPrice() {
-  this.getMostExpensivePrice().first().then(($el) => {
-  const num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
-  parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
-  expect(num).be.gt(this.phone_value);
-  });
+  this.getMostExpensivePrice().then(($el) => {
+  let num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."))
+  expect(num).be.gt(this.phone_value) 
+});
 }
 
 
-
-
 }
+
 export default new MainPage(); 

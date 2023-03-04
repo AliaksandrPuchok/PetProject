@@ -1,5 +1,4 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
-import mainPo from '../../pageobjects/main.po';
 import MainPage from '../../pageobjects/main.po';
 
 
@@ -52,8 +51,26 @@ When('I choose the most expencive option', () => {
   MainPage.clickExpensiveOption ();
 });
 
-Then('I check that the highest video card price is higher than 35000', () => {
-  MainPage.expectTheHighestPriceVideoCards(); 
+Then("I verify that the highest video card price is above 35000", () => {
+  MainPage.expectTheHighestPriceVideoCards();
+});
+
+When("I click on the Filters button again", () => {
+  MainPage.clickFilterBtn ();
+});
+
+When('I choose the most cheap option', () => {
+  MainPage.clickCheapestOption();
+});
+
+
+Then('I check that the cheapest video card price is lower than 35000', () => {
+  MainPage.expectTheLowestPriceVideoCards();
+});
+
+
+Then('I want to find out the price difference between cheaperPrice and highestPrice', () => {
+ MainPage.expectdifferenceBetweenHighestAndLowestPrices()
 });
 
 
@@ -115,7 +132,7 @@ Then('I check that the highest video card price is higher than 35000', () => {
   });
 
   Then('I check that the highest Apple smartphone price is higher than 5000', () => {
-  MainPage.expectMaximumPrice();
+  MainPage.expectMaximumPrice()
   });                
   
   
