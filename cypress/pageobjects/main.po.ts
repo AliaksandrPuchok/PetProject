@@ -1,8 +1,9 @@
+
 import Page from './page'
 
 class MainPage extends Page {
 
-  my_value = 35000.00;
+  my_value = 35000.00; phone_value = 5000;
   catalogueBtnLocator = 'div.b-top-menu a[href="https://catalog.onliner.by"]';
   computersAndNetworksBtn = ':nth-child(4) > [data-id="2"]';
   accessoriesBtn = 'div.catalog-navigation-list__aside-title';
@@ -15,8 +16,17 @@ class MainPage extends Page {
   accessoriesOptionsBar = 'span.catalog-navigation-list__dropdown-title';
   videocardsCatalog = '#schema-order';
   filtersDropdownMenu = 'div.schema-order__list';
-  desiredPhoneOnPage = 'div.schema-product__title:nth-child(1)';
-
+  electronicsBtn = ':nth-child(4) > [data-id="1"]';
+  electroicNavigationBar = '[data-id="1"] > .catalog-navigation-list__aside';
+  smartphoneBtn = '.catalog-navigation-list__dropdown-list > [href="https://catalog.onliner.by/mobile"]';
+  mobilephonesAndAccessoriesBtn = '[data-id="1"] > .catalog-navigation-list__aside > .catalog-navigation-list__aside-list > :nth-child(1) > .catalog-navigation-list__aside-title' 
+  chooseManufacturer = 'ul.schema-filter__list > li > label.schema-filter__checkbox-item > span.i-checkbox > [type="checkbox"]';
+  
+  
+  
+  
+  
+  
   getCatalogueBtn = () => cy.get(this.catalogueBtnLocator);
 
   getComputersAndNetworksBtn = () => cy.get(this.computersAndNetworksBtn);
@@ -40,9 +50,21 @@ class MainPage extends Page {
   getVideoCardsCatalog = () => cy.get(this.videocardsCatalog);
 
   getFiltersDropdownMenu = () => cy.get(this.filtersDropdownMenu);
+  
+  getElectronicBtn = () => cy.get(this.electronicsBtn) ;
+  
+  getElectroicNavigationBar = () => cy.get(this.electroicNavigationBar);
 
-  getDesiredPhonePage = () => cy.get(this.desiredPhoneOnPage);
-
+  getSmartphoneBtn = () => cy.get(this.smartphoneBtn);
+  
+  getMobilePhonesAndAccessoriesBtn = () => cy.get(this.mobilephonesAndAccessoriesBtn);
+  
+  getAppleManufacturer = () => cy.get(this.chooseManufacturer);
+  
+  
+  
+  
+  
   visitHomePage() {
     cy.visit('/');
   }
@@ -56,8 +78,9 @@ class MainPage extends Page {
   }
 
   clickComputersAndNetwoks() {
-    this.getComputersAndNetworksBtn().click();
+    this.getComputersAndNetworksBtn().click();  
   }
+
 
   expectComputersAndNetworksNavigationBarVisible() {
     this.getComputersAndNetworksNavigationBar().should('be.visible');
@@ -77,7 +100,7 @@ class MainPage extends Page {
   }
 
   expectVideoCardsCatalogVisible() {
-    this.getVideoCardsCatalog().should('be.visible');
+    this.getFilterBtn().should('be.visible');
   }
 
   clickFilterBtn() {
@@ -94,33 +117,64 @@ class MainPage extends Page {
     cy.wait('@waitExpensive');
   }
 
-  expectFilterDropdownMenuContainMostExpencive() {
-    this.getFilterBtn().should('be.visible');
-  }
-
   expectTheHighestPriceVideoCards() {
     this.getMostExpensivePrice().first().then(($el) => {
-      const num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
-      expect(num).be.gte(this.my_value);
+    const num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
+    expect(num).be.gte(this.my_value);
     });
   }
 
+  clickElectronic() {
+    this.getElectronicBtn().click();  
+  }
 
-// value = 1000.00
-//
-// visitPhonePage() {
-//  cy.visit('https://catalog.onliner.by/mobile');
-//
-// }
-//
-//
-//
-//
-// expectTheCostOfThePhone() {
-//  cy.get('div.schema-product__price:nth-child(1)')
-//  .first
-//
-// }
+
+  expectElectroicNavigationBarVisible() {
+    this.getElectroicNavigationBar().should('be.visible');
+  }
+
+  clickMobilephonesAndAccessories() {
+    this.getMobilePhonesAndAccessoriesBtn().first()
+    .click();
+  }
+
+  expectMobilephonesAndAccessoriesBarVisible() {
+  this.getAccessoriesOptionsBar ()
+  cy.scrollTo(500, 0);
+  }
+
+clickSmartphoneBtn() {
+  this.getSmartphoneBtn()
+  .click();
+}
+
+expectSmartphoneCatalogVisible() {
+  this.getFilterBtn().should('be.visible');
+}
+
+chooseApple() {
+  this.getAppleManufacturer()
+  .first()
+  .check({force:true})
+}
+
+
+clickMostExpensiveOption() {
+  cy.intercept('GET','https://catalog.onliner.by/sdapi/catalog.api/search/mobile?mfr[0]=apple&group=0&order=price:desc').as('Expensive');
+  this.getExpensiveParam().contains('Дорогие').click();
+  cy.wait('@Expensive');
+}
+
+expectMaximumPrice() {
+  this.getMostExpensivePrice().first().then(($el) => {
+  const num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
+  parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
+  expect(num).be.gt(this.phone_value);
+  });
+}
+
+
+
 
 }
 export default new MainPage(); 
