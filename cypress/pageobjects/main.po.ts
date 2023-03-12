@@ -2,14 +2,7 @@
 import { any } from 'cypress/types/bluebird';
 import Page from './page'
 
-
-let highestPrice: number;
-let cheapestPrice: number;
-
-
 class MainPage extends Page {
-
-
 
   my_value = 15000.00; phone_value = 5000;
 
@@ -30,11 +23,6 @@ class MainPage extends Page {
   smartphoneBtn = '.catalog-navigation-list__dropdown-list > [href="https://catalog.onliner.by/mobile"]';
   mobilephonesAndAccessoriesBtn = '[data-id="1"] > .catalog-navigation-list__aside > .catalog-navigation-list__aside-list > :nth-child(1) > .catalog-navigation-list__aside-title' 
   chooseManufacturer = 'ul.schema-filter__list > li > label.schema-filter__checkbox-item > span.i-checkbox > [type="checkbox"]';
-  
-  
-  
-  
-  
   
   getCatalogueBtn = () => cy.get(this.catalogueBtnLocator);
 
@@ -71,18 +59,9 @@ class MainPage extends Page {
   getAppleManufacturer = () => cy.get(this.chooseManufacturer);
   
   
-  
-  
-  
   visitHomePage() {
     cy.visit('/');
   }
-
-
-
-  // visitHomePage() {
-  //   cy.visit('https://catalog.onliner.by/mobile?mfr%5B0%5D=apple&order=price:desc');
-  // }
 
   clickCatalogButton() {
     this.getCatalogueBtn().click();
@@ -173,10 +152,6 @@ class MainPage extends Page {
 
 
 
-
-
-
-
   clickElectronic() {
     this.getElectronicBtn().click();  
   }
@@ -218,7 +193,6 @@ clickMostExpensiveOption() {
   cy.wait('@Expensive');
 }
 
-//  parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."));
 expectMaximumPrice() {
   this.getMostExpensivePrice().then(($el) => {
   let num = parseFloat($el.text().replace(/[^0-9\.,]/g, "").replace(",", "."))

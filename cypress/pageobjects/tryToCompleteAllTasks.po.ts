@@ -58,7 +58,6 @@ webTablesBtnPageLoc = 'div.web-tables-wrapper';
 addBtnLoc = '#addNewRecordButton';
 registrationFormLoc = '#registration-form-modal';
 firstNameLoc = '#firstName';
-firstNameAfterFillLoc = 'input[value=Test]';
 lastNameLoc = '#lastName';
 emailLoc = '#userEmail';
 ageLoc = '#age';
@@ -130,8 +129,11 @@ getUserPermanentAddresLoc = () => cy.get(this.userPermanentAddresLoc);
 getSubmitBtnLoc = () => cy.get(this.submitBtnLoc); 
 
 expectUserNameFilled = () => cy.get(this.expectUserName); 
+
 expectUserEmailFilled= () => cy.get(this.expectUserEmail);
+
 expectUserCurrentAddresFilled = () => cy.get(this.expectUserCurrentAddres);
+
 expectUserPermanentAddresFilled = () => cy.get(this.expectUserPermanentAddres);
 
 getConfirmationTableLoc = () => cy.get(this.confirmationTableLoc); 
@@ -175,8 +177,6 @@ getAddBtnLoc = () => cy.get(this.addBtnLoc);
 getRegistrationFormLoc = () => cy.get(this.registrationFormLoc);
 
 getFirstNameLoc = () => cy.get(this.firstNameLoc);
-
-getFirstNameAfterFillLoc = () => cy.get(this.firstNameAfterFillLoc).first();
 
 getLastNameLoc = () => cy.get(this.lastNameLoc);
 
@@ -277,6 +277,10 @@ expectText(subject: Cypress.Chainable<JQuery<HTMLElement>>, expectedText: string
   subject.should('have.text', expectedText);
 }
 
+expectValue(subject: Cypress.Chainable<JQuery<HTMLElement>>, expectedValue: string): void {
+  subject.should('have.value', expectedValue);
+}
+
 expectVisible(subject: Cypress.Chainable<JQuery<HTMLElement>>): void {
   subject.should('be.visible');
 }
@@ -287,9 +291,7 @@ visitMainPage() {
 }
 
 expectMainPage() {
-  this.expectVisible(this.getMainPageLoc()); 
-
-  // this.getMainPageLoc().should('be.visible');    
+  this.expectVisible(this.getMainPageLoc());   
 }
 
 clickElementBtn() {
@@ -297,31 +299,23 @@ clickElementBtn() {
 }
 
 expectElementPage() {
-  this.expectVisible(this.getElementPageLoc());
-
-  // this.getElementPageLoc().should('be.visible');    
+  this.expectVisible(this.getElementPageLoc());   
 }
 
 clickTextBtn() {
   this.getTextBtnLoc().click();    
 }
     
+
 expectTextBtnPage() {
   this.expectVisible(this.getTextBtnPageLoc());
-
-  // this.getTextBtnPageLoc().should('be.visible');
 }
 
 clickUserNameFieldLoc() {
   this.typeInField(this.getUserNameFieldLoc(),this.testPerson.firstName);
   this.typeInField(this.getUserEmailLoc(),this.testPerson.email);
   this.typeInField(this.getUserCurrentAddresLoc(),this.testPerson.currAddres);
-  this.typeInField(this.getUserPermanentAddresLoc(),this.testPerson.permAddres);
-
-//   this.getUserNameFieldLoc().click().type(this.testPerson.firstName),
-//   this.getUserEmailLoc().click().type(this.testPerson.email),
-//   this.getUserCurrentAddresLoc().click().type(this.testPerson.currAddres),
-//   this.getUserPermanentAddresLoc().click().type(this.testPerson.permAddres);    
+  this.typeInField(this.getUserPermanentAddresLoc(),this.testPerson.permAddres);   
 }
 
 clickSubmitBtnLoc() {
@@ -333,8 +327,8 @@ expectConfirmationTableFilled() {
   this.expectText(this.expectUserNameFilled(),'Name:'+this.testPerson.firstName); 
   this.expectText(this.expectUserEmailFilled(),'Email:'+this.testPerson.email);
   this.expectUserCurrentAddresFilled().invoke('text').then(actualText => {
-  const trimmedActualText = actualText.replace(/\s+$/, '');
-  expect(trimmedActualText).to.equal(this.testPerson.currAddres);
+  const trimmedActualText = actualText.replace(/\s$/,'');
+  expect(trimmedActualText).to.equal('Current Address :'+this.testPerson.currAddres);
   });
   // this.expectText(this.expectUserCurrentAddresFilled(),'Current Address :Test 999 str ');
   this.expectText(this.expectUserPermanentAddresFilled(),'Permananet Address :'+this.testPerson.permAddres);
@@ -381,9 +375,7 @@ clickRadioButtonBtn() {
 }
     
 expectRadioButtonBtnPage() {
-  this.expectVisible(this.getRadioButtonBtnPageLoc());
-
-  // this.getRadioButtonBtnPageLoc().should('be.visible');    
+  this.expectVisible(this.getRadioButtonBtnPageLoc());  
 }
 
 clickFirstBtnRadioButtonBtnPageLoc() {
@@ -407,9 +399,7 @@ clickWebTablesBtn() {
 }
     
 expectWebTablesBtnPage() {
-  this.expectVisible(this.getWebTablesBtnPageLoc());
-
-  // this.getWebTablesBtnPageLoc().should('be.visible');    
+  this.expectVisible(this.getWebTablesBtnPageLoc());   
 }
 
 clickAddBtnLoc() {
@@ -418,25 +408,17 @@ clickAddBtnLoc() {
 
 expectRegistrationFormLoc() {
   this.expectVisible(this.getRegistrationFormLoc())
-
-  // this.getRegistrationFormLoc().should('be.visible');
 }
 
 fillRegistrationForm() {
   this.typeInField(this.getFirstNameLoc(),this.testPerson.firstName);
   this.typeInField(this.getLastNameLoc(),this.testPerson.secondName);
   this.typeInField(this.getEmailLoc(),this.testPerson.email);
-  this.typeInField(this.getAgeLoc() ,this.getRandomInt(99).toString());
-  this.typeInField(this.getSalaryLoc(),this.getRandomInt(123456789).toString());
+  this.typeInField(this.getAgeLoc() ,this.getRandomInt(99)),
+  this.getAgeLoc().invoke('val').as('age');  
+  this.typeInField(this.getSalaryLoc(),this.getRandomInt(99999999)),
+  this.getSalaryLoc().invoke('val').as('salary');
   this.typeInField(this.getDepartmentLoc(),this.testPerson.department);
-
-// fillRegistrationForm() {
-//   this.getFirstNameLoc().click().type(this.testPerson.firstName),
-//   this.getLastNameLoc().click().type(this.testPerson.secondName),
-//   this.getEmailLoc().click().type(this.testPerson.email),
-//   this.getAgeLoc().click().type(this.getRandomInt(99).toString()),
-//   this.getSalaryLoc().click().type(this.getRandomInt(123456789).toString()),
-//   this.getDepartmentLoc().click().type(this.testPerson.department);
 }
  
 clickFormSubmitBtnLoc() {
@@ -445,8 +427,6 @@ clickFormSubmitBtnLoc() {
 
 expectSearchFieldLoc() {
   this.expectVisible(this.getSearchFieldLoc());
-
-  // this.getSearchFieldLoc().should('be.visible');
 }
 
 clickSearchFieldLoc() {
@@ -459,8 +439,6 @@ typeSearchFieldLoc() {
 
 expectEditBtnLoc() {
   this.expectVisible(this.getEditBtnLoc());
-
-  // this.getEditBtnLoc().should('be.visible');
 }
 
 clickEditBtnLoc() {
@@ -468,7 +446,13 @@ clickEditBtnLoc() {
 }
 
 expectFirstNameLoc() {
- this.getFirstNameAfterFillLoc().should('have.value', 'Test');
+  this.expectValue(this.getFirstNameLoc(),this.testPerson.firstName);
+  this.expectValue(this.getLastNameLoc(),this.testPerson.secondName);
+  this.expectValue(this.getEmailLoc(),this.testPerson.email);
+  cy.get('@age').then((age: any) => {this.expectValue(this.getAgeLoc(),age)});
+  cy.get('@salary').then((salary: any) => {this.expectValue(this.getSalaryLoc(),salary)});
+  this.expectValue(this.getDepartmentLoc(),this.testPerson.department);
+
 }
 
 clickCloseBtnLoc() {
@@ -477,8 +461,6 @@ clickCloseBtnLoc() {
 
 expectDeleteBtndLoc() {
   this.expectVisible(this.getDeleteBtndLoc());
-
-  // this.getDeleteBtndLoc().should('be.visible');
 }
 
 clickDeleteBtndLoc() {
@@ -491,8 +473,6 @@ clickButtonsBtn() {
     
 expectButtonsBtnPage() {
   this.expectVisible(this.getButtonsBtnPageLoc());
-
-  // this.getButtonsBtnPageLoc().should('be.visible');
 }
     
 clickAllBtnsOnButtonsPage() {
@@ -506,10 +486,6 @@ expectAllNotifyOnButtonsPage() {
   this.expectVisible(this.getDoubleClickNotifyOnButtonsPage());
   this.expectVisible(this.getRightClickNotifyOnButtonsPage());
   this.expectVisible(this.getSimpleClickNotifyOnButtonsPage());
-
-  // this.getDoubleClickNotifyOnButtonsPage().should('be.visible'),
-  // this.getRightClickNotifyOnButtonsPage().should('be.visible'),
-  // this.getSimpleClickNotifyOnButtonsPage().should('be.visible');
 }
 
 clickFormsDropdownMenuLoc () {
@@ -526,7 +502,8 @@ this.typeInField(this.getFormFirstNameLoc(),this.testPerson.firstName);
 this.typeInField(this.getFormLastNameLoc(),this.testPerson.secondName);
 this.typeInField(this.getFormUserEmailLoc(),this.testPerson.email);
 this.getFormGenderLoc().click({force:true});
-this.typeInField(this.getFormUserPhoneNumberLoc(),this.testPerson.phoneNumber);
+this.typeInField(this.getFormUserPhoneNumberLoc(),this.getRandomInt(9999999999)),
+this.getFormUserPhoneNumberLoc().invoke('val').as('phone');
 this.getBirthDateFieldLoc().click();
 this.getBirthDateYearLoc().select('1999');
 this.getBirthDateMonthLoc().select('May');
@@ -536,21 +513,6 @@ this.getFormHobbiesReadingCheckboxLoc().click({force:true});
 this.typeInField(this.getFormCurrentAddresLoc(),this.testPerson.currAddres);
 this.typeInField(this.getFormStateLoc(),'nc{enter}'); 
 this.typeInField(this.getFormCityLoc(),'noida{enter}');
-
-  // this.getFormFirstNameLoc().click().type(this.testPerson.firstName); 
-  // this.getFormLastNameLoc().click().type(this.testPerson.secondName);
-  // this.getFormUserEmailLoc().click().type(this.testPerson.email);  
-  // this.getFormGenderLoc().click({force:true});
-  // this.getFormUserPhoneNumberLoc().click().type(this.testPerson.phoneNumber); 
-  // this.getBirthDateFieldLoc().click();
-  // this.getBirthDateYearLoc().select('1999');
-  // this.getBirthDateMonthLoc().select('May');
-  // this.getBirthDateDayLoc().click();
-  // this.getFormSubjectsDropdownMenuLoc().click().type('mat{enter}'); 
-  // this.getFormHobbiesReadingCheckboxLoc().click({force:true});
-  // this.getFormCurrentAddresLoc().click({force:true}).type(this.testPerson.currAddres);
-  // this.getFormStateLoc().click().type('nc{enter}'); 
-  // this.getFormCityLoc().click().type('noida{enter}'); 
 }
 
 clickFormSubmitBtn()  {
@@ -559,12 +521,10 @@ clickFormSubmitBtn()  {
 
 expectFullFilledFormPage() {
   this.expectVisible(this.getExpectFilledForm());
-
-  // this.getExpectFilledForm().should('be.visible');
 }
 
 expectFullFilledForm() {
-  this.expectText(this.getFilledPhoneLoc(),'1234567890');
+  cy.get('@phone').then((phone: any) => {this.expectText(this.getFilledPhoneLoc(),phone.toString())});
   this.expectText(this.getExpectBirthDateLoc(),'21 May,1999');
   this.expectText(this.getFilledStudentFullNameLoc(),'Test Test2');
   this.expectText(this.getFilledStudentEmailLoc(),this.testPerson.email);
@@ -573,16 +533,6 @@ expectFullFilledForm() {
   this.expectText(this.getFilledHobbiesLoc(),'Reading');
   this.expectText(this.getFilledAddresLoc(),this.testPerson.currAddres);
   this.expectText(this.getFilledStateAndCity(),'NCR Noida');
-
-  // this.getFilledPhoneLoc().should('have.text','1234567890');
-  // this.getExpectBirthDateLoc().should('have.text','21 May,1999');
-  // this.getFilledStudentFullNameLoc().should('have.text','Test Test2');
-  // this.getFilledStudentEmailLoc().should('have.text',this.testPerson.email);
-  // this.getFilledGenderLoc().should('have.text','Male');
-  // this.getFilledSubjectLoc().should('have.text','Maths');
-  // this.getFilledHobbiesLoc().should('have.text','Reading');
-  // this.getFilledAddresLoc().should('have.text',this.testPerson.currAddres);
-  // this.getFilledStateAndCity().should('have.text','NCR Noida');
 }
 
 

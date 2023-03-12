@@ -47,7 +47,7 @@ Then('I should see filters dropdown', () => {
 });
   
   
-When('I choose the most expencive option', () => {
+When('I choose the expensive option', () => {
   MainPage.clickExpensiveOption ();
 });
 
@@ -59,7 +59,7 @@ When("I click on the Filters button again", () => {
   MainPage.clickFilterBtn ();
 });
 
-When('I choose the most cheap option', () => {
+When('I choose the cheap option', () => {
   MainPage.clickCheapestOption();
 });
 
@@ -69,7 +69,7 @@ Then('I check that the cheapest video card price is lower than 35000', () => {
 });
 
 
-Then('I want to find out the price difference between cheaperPrice and highestPrice', () => {
+Then('I want to find out the price difference between cheapest and highest price', () => {
  MainPage.expectdifferenceBetweenHighestAndLowestPrices()
 });
 
@@ -127,7 +127,7 @@ Then('I want to find out the price difference between cheaperPrice and highestPr
   });
     
     
-  When('I choose Most expencive option', () => {
+  When('I choose expencive option', () => {
   MainPage.clickMostExpensiveOption ();
   });
 
